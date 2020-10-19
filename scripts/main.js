@@ -1,1 +1,4 @@
-console.log("Welcome to the main module")
+
+import {criminalList} from "./criminals/criminalList.js"
+
+criminalList()
