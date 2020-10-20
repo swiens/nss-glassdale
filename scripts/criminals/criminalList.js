@@ -5,7 +5,7 @@ export const criminalList = () => {
     getCriminals().then(
         () => {
             const criminals = useCriminals() 
-            console.log(criminals)
+        
             
             const contentElement = document.querySelector(".criminalsContainer")
 
@@ -14,7 +14,7 @@ export const criminalList = () => {
             for(const criminal of criminals) {
                 criminalHtml += generateCriminalHtml(criminal)
             }
-            console.log(criminalHtml)
+            
 
             contentElement.innerHTML = criminalHtml
         }   
