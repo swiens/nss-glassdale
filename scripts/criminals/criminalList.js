@@ -1,5 +1,8 @@
-import { generateCriminalHtml } from './criminal.js'
+import { generateCriminalHtml, Criminal } from './criminal.js'
 import { getCriminals, useCriminals } from './criminalDataProvider.js'
+import {getFacilities, useFacilities}  from "../facility/FacilityProvider.js"
+import {getCriminalFacilities, useCriminalFacilities} from "../facility/CriminalFacilityProvider.js"
+import { useNotes } from '../notes/noteDataProvider.js'
 
 const eventHub = document.querySelector(".container")
 
@@ -16,7 +19,7 @@ eventHub.addEventListener('crimeChosen', event => {
 
             return currentCriminal.conviction === event.detail.crimeThatWasChosen
         })
-        render(matchingCriminals)
+        render(matchingCriminals, useFacilities(), useCriminalFacilities())
 
         /*
             Then invoke render() and pass the filtered collection as
@@ -37,7 +40,7 @@ eventHub.addEventListener('officerSelected', event => {
             return currentCriminal.arrestingOfficer === event.detail.officerName
         })
 
-        render(matchingCriminals)
+        render(matchingCriminals, useFacilities(), useCriminalFacilities())
 
         /*
             Then invoke render() and pass the filtered collection as
@@ -48,32 +51,12 @@ eventHub.addEventListener('officerSelected', event => {
 
 const contentTarget = document.querySelector(".criminalsContainer")
 
-const render = (criminalCollection) => {
-    let criminalsHTMLRepresentations = ""
-    for (const criminal of criminalCollection) {
-      criminalsHTMLRepresentations += generateCriminalHtml(criminal) 
-    }
-    contentTarget.innerHTML = `
-            <h3>Glassdale Criminals</h3>
-            <section class="criminalsList">
-              ${criminalsHTMLRepresentations}
-            </section>
-          `
-  }
 
-
-// Render ALL criminals initally
-export const criminalList = () => {
-    getCriminals()
-        .then(() => {
-            const appStateCriminals = useCriminals()
-            render(appStateCriminals)
-        })
-} 
 
 export const CriminalList = () => {
     // Kick off the fetching of both collections of data
-    getFacilities()
+    getCriminals()
+    .then(getFacilities)
         .then(getCriminalFacilities)
         .then(
             () => {
@@ -81,15 +64,17 @@ export const CriminalList = () => {
                 const facilities = useFacilities()
                 const crimFac = useCriminalFacilities()
                 const criminals = useCriminals()
-
+        
                 // Pass all three collections of data to render()
                 render(criminals, facilities, crimFac)
+                
             }
         )
 }
 
 const render = (criminalsToRender, allFacilities, allRelationships) => {
     // Step 1 - Iterate all criminals
+    
     contentTarget.innerHTML = criminalsToRender.map(
         (criminalObject) => {
             // Step 2 - Filter all relationships to get only ones for this criminal
@@ -100,9 +85,10 @@ const render = (criminalsToRender, allFacilities, allRelationships) => {
                 const matchingFacilityObject = allFacilities.find(facility => facility.id === cf.facilityId)
                 return matchingFacilityObject
             })
-
+        
             // Must pass the matching facilities to the Criminal component
             return Criminal(criminalObject, facilities)
+            
         }
     ).join("")
 }
