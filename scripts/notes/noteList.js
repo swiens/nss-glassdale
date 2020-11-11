@@ -2,8 +2,11 @@ import { useNotes, getNotes } from './noteDataProvider.js'
 // import { useCriminals } from '../criminals/criminalDataProvider.js'
 import {Note} from "./note.js"
 
+const eventHub = document.querySelector(".container")
 
-
+eventHub.addEventListener("noteStateChanged", () => {
+    NoteList()
+})
 
 const contentTarget = document.querySelector(".noteListContainer")
 
