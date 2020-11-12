@@ -18,3 +18,7 @@ noteForm()
 import {NoteList} from "./notes/noteList.js"
 
 NoteList()
+
+import {DisplayFacilitiesButton} from "./facility/FacilitiesButton.js"
+
+DisplayFacilitiesButton()
