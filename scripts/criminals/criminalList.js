@@ -49,6 +49,10 @@ eventHub.addEventListener('officerSelected', event => {
     }
 })
 
+eventHub.addEventListener("facilitiesButtonClicked", () => {
+    
+})
+
 const contentTarget = document.querySelector(".criminalsContainer")
 
 
